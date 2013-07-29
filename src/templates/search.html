@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Search:{{ query }} - Boycottree{% endblock %}
+{% block content %}
+	<article>
+	    <header>
+	        <h1>Search - {{ query }}</h1>
+	    </header>
+	    <section>
+	        <ul>
+	           <li>Product {{ query }}</li>
+               <li>Company {{ query }}</li>
+               <li>...</li>
+	        </ul>
+	    </section>
+	</article>
+	
+	<aside>
+	    <h3>Filters</h3>
+	    <p>Insert filters here</p>
+	</aside>
+{% endblock %}
