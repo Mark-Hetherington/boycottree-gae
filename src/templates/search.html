@@ -11,7 +11,14 @@
                <li>Company {{ query }}</li>
                <li>...</li>
 	        </ul>
-	    </section>
+	    </section>                    
+        <section>
+        	<h2>Boycotts</h2>
+            {% for boycott in boycotts %}
+               <h2>{{ boycott.name|escape }}</h2>
+              <blockquote>{{ boycott.content|escape }}</blockquote>
+            {% endfor %}
+        </section>
 	</article>
 	
 	<aside>

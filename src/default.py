@@ -18,6 +18,8 @@ from google.appengine.api import users
 import os
 import models
 from datetime import datetime
+from google.appengine.ext import db
+import pprint
 
 # Set to true if we want to have our webapp print stack traces, etc
 _DEBUG = True
@@ -55,7 +57,9 @@ class ToolsPage(RequestHandlerBase):
 class SearchPage(RequestHandlerBase):
     def get(self):        
         #TODO:Generate search data!
-        self.renderTemplate('search.html',{ 'query' : self.request.get("q")})
+        boycotts_query = models.Boycott.all()
+        boycotts = boycotts_query.fetch(10)
+        self.renderTemplate('search.html',{ 'query' : self.request.get("q"), 'boycotts':boycotts})
         
 class ProductIndex(RequestHandlerBase):
     def get(self):
@@ -66,7 +70,7 @@ class CompanyIndex(RequestHandlerBase):
         self.renderTemplate('companies.html')
 
 class BoycottIndex(RequestHandlerBase):
-    def get(self):
+    def get(self):        
         self.renderTemplate('boycotts.html')
         
     def post(self):
