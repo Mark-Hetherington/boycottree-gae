@@ -16,6 +16,8 @@ import logging
 from google.appengine.ext.webapp import template
 from google.appengine.api import users
 import os
+import models
+from datetime import datetime
 
 # Set to true if we want to have our webapp print stack traces, etc
 _DEBUG = True
@@ -57,19 +59,45 @@ class SearchPage(RequestHandlerBase):
         
 class ProductIndex(RequestHandlerBase):
     def get(self):
-        self.renderTemplate('product.html')
+        self.renderTemplate('products.html')
 
 class CompanyIndex(RequestHandlerBase):
     def get(self):
-        self.renderTemplate('company.html')
+        self.renderTemplate('companies.html')
 
 class BoycottIndex(RequestHandlerBase):
     def get(self):
-        self.renderTemplate('boycott.html')
+        self.renderTemplate('boycotts.html')
+        
+    def post(self):
+        boycott = models.Boycott()
+        boycott.name = self.request.get('name')
+        boycott.content = self.request.get('content')
+        boycott.started = datetime.strptime(self.request.get('started'),'%Y-%M-%d')
+        boycott.finished = datetime.strptime(self.request.get('finished'),'%Y-%M-%d')
+        boycottId = boycott.put()
+        self.redirect('/boycott/' + "%02d" % boycottId.id())
+
+class BoycottPage(RequestHandlerBase):
+    def get(self,boycottId):
+        boycott = models.Boycott.get_by_id(int(boycottId))
+        self.renderTemplate('boycott.html',{'boycott':boycott})
+    
+    
+        
+"""    def post(self,boycottId):
+    greeting = Greeting()
+
+    if users.get_current_user():
+      greeting.author = users.get_current_user()
+
+    greeting.content = self.request.get('content')
+    greeting.put()
+    self.redirect('/')"""
 
 class CountryIndex(RequestHandlerBase):
     def get(self):
-        self.renderTemplate('country.html')
+        self.renderTemplate('countries.html')
         
 def handle_404(request, response, exception):
     logging.exception(exception)
@@ -82,6 +110,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/product',ProductIndex),
                                ('/company',CompanyIndex),
                                ('/boycott',BoycottIndex),
+                               (r'/boycott/(.*)', BoycottPage),
                                ('/country',CountryIndex)], debug=True)
 app.error_handlers[404] = handle_404
 
